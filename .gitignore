@@ -23,7 +23,7 @@
 local.properties
 
 # Archivos de Google Services (usa una plantilla en su lugar)
-google-services.json
+app/google-services.json
 
 # Archivos generados por lint/IDE
 lint/intermediates/

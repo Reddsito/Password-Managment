@@ -13,4 +13,59 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="text_h1">
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/blue_dark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_h2">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/blue_dark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_h3">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/blue_dark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_body">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/blue_dark</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="text_body2">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/blue_dark</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="text_outline">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/blue_dark</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="input_field">
+        <item name="android:textAppearance">@style/text_body2</item>
+        <item name="android:background">@drawable/input_border</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="button">
+        <item name="android:backgroundTint">@color/blue_dark</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textAppearance">@style/text_body</item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Password_managment" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
 </resources>

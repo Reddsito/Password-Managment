@@ -70,9 +70,9 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (getActivity() != null ) {
-                    String email = emailField.getText().trim();
+                    String email = emailField.getText().trim().toLowerCase();
                     String password = passwordField.getText().trim();
-                    String name = nameField.getText().trim();
+                    String name = nameField.getText().trim().toLowerCase();
 
                     if( TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name) ) {
                         Toast.makeText(requireContext(), "No se permiten campos vacíos", Toast.LENGTH_SHORT).show();

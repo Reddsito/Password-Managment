@@ -13,14 +13,21 @@ import com.password_managment.R;
 import com.password_managment.auth.AuthManager;
 import com.password_managment.fragments.LoginFragment;
 import com.password_managment.fragments.RegisterFragment;
+import com.password_managment.fragments.SecurityQuestionsFragment;
 import com.password_managment.helpers.ActivityHelper;
 import com.password_managment.helpers.FragmentHelper;
+import com.password_managment.repository.SecurityResponsesRepository;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class AuthActivity extends AppCompatActivity {
 
     private FragmentHelper fragmentHelper;
     private AuthManager authManager;
     private ActivityHelper activityHelper;
+    private SecurityResponsesRepository securityResponsesRepository;
 
 
     @Override
@@ -41,6 +48,7 @@ public class AuthActivity extends AppCompatActivity {
         fragmentHelper = new FragmentHelper(getSupportFragmentManager(), this);
         authManager = AuthManager.getInstance();
         activityHelper = new ActivityHelper(this);
+        securityResponsesRepository = new SecurityResponsesRepository();
 
         if (savedInstanceState == null) {
             showLoginFragment();
@@ -57,6 +65,11 @@ public class AuthActivity extends AppCompatActivity {
     public void showRegisterFragment() {
         RegisterFragment registerFragment = new RegisterFragment();
         fragmentHelper.replaceFragment(R.id.fragment_container, registerFragment);
+    }
+
+    public void showSecurityQuestionFragment() {
+        SecurityQuestionsFragment securityQuestionsFragment = new SecurityQuestionsFragment();
+        fragmentHelper.replaceFragment(R.id.fragment_container, securityQuestionsFragment);
     }
 
     public void signIn(String email, String password) {
@@ -77,7 +90,7 @@ public class AuthActivity extends AppCompatActivity {
         authManager.createUserWithEmailAndPassword(email, password, name, new AuthManager.AuthCallback() {
             @Override
             public void onSuccess() {
-                activityHelper.startNewActivity(HomeActivity.class);
+                showSecurityQuestionFragment();
             }
 
             @Override
@@ -86,6 +99,21 @@ public class AuthActivity extends AppCompatActivity {
                 Toast.makeText(AuthActivity.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void saveSecurityQuestions(Map<String, Object> securityQuestions) {
+        String userId = authManager.getCurrentUser().getUid();
+            securityResponsesRepository.saveSecurityQuestion(userId, "questions", securityQuestions, new SecurityResponsesRepository.FirestoreCallback() {
+                @Override
+                public void onSuccess() {
+                    activityHelper.startNewActivity(HomeActivity.class);
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    Toast.makeText(AuthActivity.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
 }

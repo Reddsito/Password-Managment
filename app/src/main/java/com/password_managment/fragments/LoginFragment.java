@@ -64,7 +64,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (getActivity() != null) {
-                    String email = emailField.getText().trim();
+                    String email = emailField.getText().trim().toLowerCase();
                     String password = passwordField.getText().trim();
 
                     if( TextUtils.isEmpty(email) || TextUtils.isEmpty(password) ) {

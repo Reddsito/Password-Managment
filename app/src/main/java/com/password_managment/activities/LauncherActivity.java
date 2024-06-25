@@ -35,6 +35,8 @@ public class LauncherActivity extends AppCompatActivity {
         activityHelper = new ActivityHelper(this);
         authManager = AuthManager.getInstance();
 
+        authManager.signOut();
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }

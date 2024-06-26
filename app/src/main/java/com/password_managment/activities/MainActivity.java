@@ -37,15 +37,12 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                // Iniciar la nueva actividad después de 3 segundos
                 Intent intent = new Intent(MainActivity.this, LauncherActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                // Finalizar la actividad actual
                 finish();
             }
-        }, 2000);
+        }, 1500);
 
     }
 }

@@ -16,6 +16,12 @@
         android:text=""
         style="@style/text_h1"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/password_list"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <com.password_managment.components.ButtonComponent
         android:id="@+id/buttonCreatePassword"
         android:layout_marginTop="40dp"

@@ -9,6 +9,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,9 @@ import android.widget.Toast;
 
 import com.password_managment.R;
 import com.password_managment.components.FormFieldComponent;
+import com.password_managment.repository.AuthRepository;
+import com.password_managment.ui.home.HomeActivity;
+import com.password_managment.utils.helpers.ActivityHelper;
 
 public class LoginFragment extends Fragment {
 
@@ -25,6 +29,7 @@ public class LoginFragment extends Fragment {
     private FormFieldComponent passwordField;
     private FormFieldComponent emailField;
     private Button loginButton;
+    private  ActivityHelper activityHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,7 +40,7 @@ public class LoginFragment extends Fragment {
         emailField = view.findViewById(R.id.form_field);
         passwordField = view.findViewById(R.id.form_field2);
         loginButton = view.findViewById(R.id.button_login);
-
+        activityHelper = new ActivityHelper(getActivity());
 
         emailField.setLabel("Email");
         emailField.setHint("example@gmail.com");

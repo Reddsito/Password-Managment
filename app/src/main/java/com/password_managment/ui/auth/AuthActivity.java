@@ -9,12 +9,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.password_managment.R;
 import com.password_managment.repository.AuthRepository;
 import com.password_managment.utils.helpers.ActivityHelper;
 import com.password_managment.utils.helpers.FragmentHelper;
 import com.password_managment.repository.SecurityResponsesRepository;
 import com.password_managment.ui.home.HomeActivity;
+import com.password_managment.utils.helpers.SharedPreferencesHelper;
 
 import java.util.Map;
 
@@ -24,6 +26,8 @@ public class AuthActivity extends AppCompatActivity {
     private AuthRepository authRepository;
     private ActivityHelper activityHelper;
     private SecurityResponsesRepository securityResponsesRepository;
+    private SharedPreferencesHelper preferencesHelper;
+
 
 
     @Override
@@ -44,6 +48,7 @@ public class AuthActivity extends AppCompatActivity {
         fragmentHelper = new FragmentHelper(getSupportFragmentManager(), this);
         authRepository = AuthRepository.getInstance();
         activityHelper = new ActivityHelper(this);
+        preferencesHelper = new SharedPreferencesHelper(this);
         securityResponsesRepository = new SecurityResponsesRepository();
 
         if (savedInstanceState == null) {
@@ -72,6 +77,8 @@ public class AuthActivity extends AppCompatActivity {
         authRepository.signInWithEmailAndPassword(email, password, this, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess() {
+                FirebaseUser user = authRepository.getCurrentUser();
+                preferencesHelper.saveString("user_id", user.getUid());
                 activityHelper.startNewActivity(HomeActivity.class);
             }
 

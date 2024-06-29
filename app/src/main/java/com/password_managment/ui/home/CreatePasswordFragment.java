@@ -16,36 +16,37 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.password_managment.R;
 import com.password_managment.components.FormFieldComponent;
+import com.password_managment.databinding.FragmentCreatePasswordBinding;
 import com.password_managment.models.Password;
 import com.password_managment.repository.PasswordRepository;
 import com.password_managment.utils.helpers.FragmentHelper;
+import com.password_managment.utils.helpers.ToastHelper;
 
 public class CreatePasswordFragment extends Fragment {
 
     private FormFieldComponent title;
     private FormFieldComponent password;
     private Button createButton;
-    private HomeViewModel homeViewModel;
     private PasswordRepository passwordRepository;
     private FragmentHelper fragmentHelper;
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-    }
+    private HomeViewModel viewModel;
+    private FragmentCreatePasswordBinding binding;
+    private ToastHelper toastHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_create_password, container, false);
+        binding = FragmentCreatePasswordBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
+        viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         fragmentHelper = new FragmentHelper(getChildFragmentManager(), getActivity());
         passwordRepository = new PasswordRepository();
-        title = view.findViewById(R.id.form_field);
-        password = view.findViewById(R.id.form_field2);
-        createButton = view.findViewById(R.id.button_create);
+        toastHelper = new ToastHelper();
+
+        title = binding.formField;
+        password = binding.formField2;
+        createButton = binding.buttonCreate;
 
         title.setLabel("Title");
         title.setHint("Title");
@@ -55,34 +56,28 @@ public class CreatePasswordFragment extends Fragment {
         password.setHint("*********");
         password.setType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        createButton.setOnClickListener(v -> {
-            String titleText = title.getText();
-            String passwordText = password.getText();
-
-            if (TextUtils.isEmpty(titleText) || TextUtils.isEmpty(passwordText)) {
-                Toast.makeText(requireContext(), "Title or password can't be empty", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            homeViewModel.userId.observe(getViewLifecycleOwner(), userId -> {
-                if (userId != null) {
-                    passwordRepository.createPassword(userId, new Password(titleText, passwordText))
-                            .thenAccept(response -> {
-                                showHomeFragment();
-                            }).exceptionally(e -> {
-                                Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                return null;
-                            });
-                }
-            });
-        });
+        setUpObservers();
+        setUpListeners();
 
         return view;
     }
 
-    private void showHomeFragment() {
-        if (getActivity() != null) {
-            ((HomeActivity) getActivity()).showHomeFragment();
-        }
+    private void setUpListeners() {
+        createButton.setOnClickListener(v -> {
+            String titleText = title.getText();
+            String passwordText = password.getText();
+            viewModel.createPassword(titleText, passwordText);
+        });
+    }
+
+    public void setUpObservers() {
+        viewModel.toastMessage.observe(getViewLifecycleOwner(), message -> {
+            toastHelper.showShortToast(requireActivity(), message);
+        });
+    }
+
+
+    private void showToast(String message) {
+        toastHelper.showShortToast(requireActivity(), message);
     }
 }

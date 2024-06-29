@@ -1,6 +1,7 @@
 package com.password_managment.ui.main;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -12,17 +13,19 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.password_managment.R;
 import com.password_managment.repository.AuthRepository;
 import com.password_managment.ui.home.HomeViewModel;
 import com.password_managment.ui.launcher.LauncherActivity;
+import com.password_managment.utils.helpers.SharedPreferencesHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     FirebaseFirestore db;
-    HomeViewModel viewModel;
     AuthRepository authRepository;
+    SharedPreferencesHelper preferencesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,37 +40,26 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         db = FirebaseFirestore.getInstance();
         authRepository = AuthRepository.getInstance();
+        preferencesHelper = new SharedPreferencesHelper(this);
+
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
-        observeLoadingState();
-
-        // Verificar si hay un usuario autenticado
-        if (authRepository.getCurrentUser() != null) {
-            String userId = authRepository.getCurrentUser().getUid();
-            viewModel.setUserId(userId); // Configurar el ID del usuario en el ViewModel
-            viewModel.fetchUser(); // Iniciar la solicitud para obtener el usuario
-        } else {
-            startLauncherActivity(); // Si no hay usuario autenticado, iniciar LauncherActivity
+       FirebaseUser user = authRepository.getCurrentUser();
+        if (user != null) {
+            preferencesHelper.saveString("user_id", user.getUid());
         }
-    }
-
-    private void observeLoadingState() {
-        viewModel.loading.observe(this, isLoading -> {
-            if (!isLoading) {
-                startLauncherActivity();
-            }
-        });
+        startLauncherActivity();
     }
 
     private void startLauncherActivity() {
-        Intent intent = new Intent(MainActivity.this, LauncherActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        finish();
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(MainActivity.this, LauncherActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            finish();
+        }, 1500);
     }
 }

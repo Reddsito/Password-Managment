@@ -6,19 +6,20 @@ import android.os.Bundle;
 import android.content.res.ColorStateList;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.password_managment.R;
 import com.password_managment.databinding.ActivityHomeBinding;
 import com.password_managment.utils.helpers.FragmentHelper;
+import com.password_managment.utils.helpers.SharedPreferencesHelper;
 
 public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
     private FragmentHelper fragmentHelper;
     private HomeViewModel viewModel;
+    SharedPreferencesHelper preferencesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,16 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        HomeViewModel viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        preferencesHelper = new SharedPreferencesHelper(this);
         fragmentHelper = new FragmentHelper(getSupportFragmentManager(), this);
         fragmentHelper.replaceFragment(R.id.frame_layout, new HomeFragment());
+        String userId = preferencesHelper.getString("user_id", "");
 
+        setUpSubscribers();
+        viewModel.fetchUser(userId);
         setupBottomNavigationView();
+
     }
 
     private void setupBottomNavigationView() {
@@ -62,7 +68,19 @@ public class HomeActivity extends AppCompatActivity {
         colorAnimation.start();
     }
 
+    public void setUpSubscribers() {
+        if (viewModel != null) {
+            viewModel.showHome.observe(this, navigate -> {
+                if (navigate.getContentIfNotHandled()) showHomeFragment();
+            });
+        }
+    }
+
     public void showHomeFragment() {
         fragmentHelper.replaceFragment(R.id.frame_layout, new HomeFragment());
+    }
+
+    public void showCreatePasswordFragment() {
+        fragmentHelper.replaceFragment(R.id.frame_layout, new CreatePasswordFragment());
     }
 }

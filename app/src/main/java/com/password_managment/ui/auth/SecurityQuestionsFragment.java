@@ -1,4 +1,4 @@
-package com.password_managment.fragments;
+package com.password_managment.ui.auth;
 
 import android.os.Bundle;
 
@@ -13,10 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.password_managment.R;
-import com.password_managment.activities.AuthActivity;
-import com.password_managment.auth.AuthManager;
 import com.password_managment.components.FormFieldComponent;
-import com.password_managment.repository.SecurityResponsesRepository;
 
 import java.util.HashMap;
 import java.util.Map;

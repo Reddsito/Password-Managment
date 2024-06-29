@@ -7,10 +7,7 @@ public class Functions {
             return inputString;
         }
 
-        // Obtener el primer carácter y convertirlo a mayúscula
         char firstLetter = Character.toUpperCase(inputString.charAt(0));
-
-        // Concatenar el primer carácter en mayúscula con el resto de la cadena
         return firstLetter + inputString.substring(1);
     }
 }

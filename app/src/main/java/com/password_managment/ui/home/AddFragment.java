@@ -1,4 +1,4 @@
-package com.password_managment.fragments;
+package com.password_managment.ui.home;
 
 import android.os.Bundle;
 
@@ -10,12 +10,14 @@ import android.view.ViewGroup;
 
 import com.password_managment.R;
 
-public class ProfileFragment extends Fragment {
+public class AddFragment extends Fragment {
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_profile, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_add, container, false);
         return view;
     }
 }

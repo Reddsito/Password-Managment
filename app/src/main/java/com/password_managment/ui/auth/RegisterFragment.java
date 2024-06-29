@@ -1,4 +1,4 @@
-package com.password_managment.fragments;
+package com.password_managment.ui.auth;
 
 import android.os.Bundle;
 
@@ -17,26 +17,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.password_managment.R;
-import com.password_managment.activities.AuthActivity;
 import com.password_managment.components.FormFieldComponent;
 
-public class LoginFragment extends Fragment {
+public class RegisterFragment extends Fragment {
 
-    private TextView textViewRegister;
+    private TextView textViewSignUp;
     private FormFieldComponent passwordField;
     private FormFieldComponent emailField;
-    private Button loginButton;
+    private Button registerButton;
+    private FormFieldComponent nameField;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        TextView textViewRegister = view.findViewById(R.id.text_view_register);
-        emailField = view.findViewById(R.id.form_field);
-        passwordField = view.findViewById(R.id.form_field2);
-        loginButton = view.findViewById(R.id.button_login);
+        TextView textViewSignUp = view.findViewById(R.id.text_view_signup);
+        nameField = view.findViewById(R.id.form_field);
+        emailField = view.findViewById(R.id.form_field2);
+        passwordField = view.findViewById(R.id.form_field3);
+        registerButton = view.findViewById(R.id.button_register);
 
+        emailField.setLabel("Name");
+        emailField.setHint("Jhon Doe");
+        emailField.setType(InputType.TYPE_CLASS_TEXT);
 
         emailField.setLabel("Email");
         emailField.setHint("example@gmail.com");
@@ -46,32 +51,34 @@ public class LoginFragment extends Fragment {
         passwordField.setHint("*********");
         passwordField.setType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        String text = textViewRegister.getText().toString();
+        String text = textViewSignUp.getText().toString();
         SpannableString spannableString = new SpannableString(text);
         spannableString.setSpan(new UnderlineSpan(), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textViewRegister.setText(spannableString);
+        textViewSignUp.setText(spannableString);
 
-        textViewRegister.setOnClickListener(new View.OnClickListener() {
+        textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getActivity() != null) {
-                    ((AuthActivity) getActivity()).showRegisterFragment();
+                    ((AuthActivity) getActivity()).showLoginFragment();
                 }
             }
         });
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity() != null) {
+                if (getActivity() != null ) {
                     String email = emailField.getText().trim().toLowerCase();
                     String password = passwordField.getText().trim();
+                    String name = nameField.getText().trim().toLowerCase();
 
-                    if( TextUtils.isEmpty(email) || TextUtils.isEmpty(password) ) {
+                    if( TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name) ) {
                         Toast.makeText(requireContext(), "No se permiten campos vacíos", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    ((AuthActivity) getActivity()).signIn(email, password);
+
+                    ((AuthActivity) getActivity()).signUp(email, name, password);
                 }
             }
         });
@@ -84,5 +91,4 @@ public class LoginFragment extends Fragment {
         spannableString.setSpan(new UnderlineSpan(), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
     }
-
 }

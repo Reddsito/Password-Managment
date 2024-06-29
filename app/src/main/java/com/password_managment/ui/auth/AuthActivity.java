@@ -1,4 +1,4 @@
-package com.password_managment.activities;
+package com.password_managment.ui.auth;
 
 import android.os.Bundle;
 import android.widget.Toast;
@@ -10,22 +10,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.password_managment.R;
-import com.password_managment.auth.AuthManager;
-import com.password_managment.fragments.LoginFragment;
-import com.password_managment.fragments.RegisterFragment;
-import com.password_managment.fragments.SecurityQuestionsFragment;
-import com.password_managment.helpers.ActivityHelper;
-import com.password_managment.helpers.FragmentHelper;
+import com.password_managment.repository.AuthRepository;
+import com.password_managment.utils.helpers.ActivityHelper;
+import com.password_managment.utils.helpers.FragmentHelper;
 import com.password_managment.repository.SecurityResponsesRepository;
+import com.password_managment.ui.home.HomeActivity;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class AuthActivity extends AppCompatActivity {
 
     private FragmentHelper fragmentHelper;
-    private AuthManager authManager;
+    private AuthRepository authRepository;
     private ActivityHelper activityHelper;
     private SecurityResponsesRepository securityResponsesRepository;
 
@@ -46,7 +42,7 @@ public class AuthActivity extends AppCompatActivity {
         }
 
         fragmentHelper = new FragmentHelper(getSupportFragmentManager(), this);
-        authManager = AuthManager.getInstance();
+        authRepository = AuthRepository.getInstance();
         activityHelper = new ActivityHelper(this);
         securityResponsesRepository = new SecurityResponsesRepository();
 
@@ -73,7 +69,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     public void signIn(String email, String password) {
-        authManager.signInWithEmailAndPassword(email, password, this, new AuthManager.AuthCallback() {
+        authRepository.signInWithEmailAndPassword(email, password, this, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess() {
                 activityHelper.startNewActivity(HomeActivity.class);
@@ -87,7 +83,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     public void signUp(String email, String name, String password) {
-        authManager.createUserWithEmailAndPassword(email, password, name, new AuthManager.AuthCallback() {
+        authRepository.createUserWithEmailAndPassword(email, password, name, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess() {
                 showSecurityQuestionFragment();
@@ -102,7 +98,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     public void saveSecurityQuestions(Map<String, Object> securityQuestions) {
-        String userId = authManager.getCurrentUser().getUid();
+        String userId = authRepository.getCurrentUser().getUid();
             securityResponsesRepository.saveSecurityQuestion(userId, "questions", securityQuestions, new SecurityResponsesRepository.FirestoreCallback() {
                 @Override
                 public void onSuccess() {

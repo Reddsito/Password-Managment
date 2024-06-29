@@ -1,4 +1,4 @@
-package com.password_managment.helpers;
+package com.password_managment.utils.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

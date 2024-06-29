@@ -1,4 +1,4 @@
-package com.password_managment.activities;
+package com.password_managment.ui.launcher;
 
 import android.os.Bundle;
 
@@ -10,14 +10,16 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.password_managment.R;
-import com.password_managment.auth.AuthManager;
-import com.password_managment.helpers.ActivityHelper;
+import com.password_managment.ui.auth.AuthActivity;
+import com.password_managment.repository.AuthRepository;
+import com.password_managment.utils.helpers.ActivityHelper;
+import com.password_managment.ui.home.HomeActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private ActivityHelper activityHelper;
-    private AuthManager authManager;
+    private AuthRepository authRepository;
 
 
     @Override
@@ -33,13 +35,13 @@ public class LauncherActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         activityHelper = new ActivityHelper(this);
-        authManager = AuthManager.getInstance();
+        authRepository = AuthRepository.getInstance();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        if(authManager.getCurrentUser() == null) {
+        if(authRepository.getCurrentUser() == null) {
             activityHelper.startNewActivity(AuthActivity.class);
         } else {
             activityHelper.startNewActivity(HomeActivity.class);

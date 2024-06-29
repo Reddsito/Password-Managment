@@ -1,4 +1,4 @@
-package com.password_managment.auth;
+package com.password_managment.repository;
 
 import android.content.Context;
 import com.google.firebase.auth.FirebaseAuth;
@@ -7,19 +7,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthManager {
-    private static AuthManager instance;
+public class AuthRepository {
+    private static AuthRepository instance;
     private final FirebaseAuth mAuth;
     private final FirebaseFirestore db;
 
-    private AuthManager() {
+    private AuthRepository() {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
     }
 
-    public static synchronized AuthManager getInstance() {
+    public static synchronized AuthRepository getInstance() {
         if (instance == null) {
-            instance = new AuthManager();
+            instance = new AuthRepository();
         }
         return instance;
     }

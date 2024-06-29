@@ -1,8 +1,17 @@
 package com.password_managment.models;
 
 public class User {
+    String id;
     String name;
     String email;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

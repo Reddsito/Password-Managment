@@ -2,13 +2,14 @@ package com.password_managment.utils.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 public class FragmentHelper {
-    private FragmentManager fragmentManager;
+    private final FragmentManager fragmentManager;
     private Context context;
 
     public FragmentHelper(FragmentManager fragmentManager, Context context) {
@@ -23,15 +24,9 @@ public class FragmentHelper {
         transaction.commit();
     }
 
-    @SuppressLint("DiscouragedApi")
-    public void replaceFragmentWithAnimation(int containerId, Fragment fragment) {
+    public void replaceFragmentWithExtras(int containerId, Fragment fragment, Bundle extras) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.setCustomAnimations(
-                context.getResources().getIdentifier("slide_in_right", "anim", context.getPackageName()),
-                context.getResources().getIdentifier("slide_out_left", "anim", context.getPackageName()),
-                context.getResources().getIdentifier("slide_in_right", "anim", context.getPackageName()),
-                context.getResources().getIdentifier("slide_out_left", "anim", context.getPackageName())
-        );
+        fragment.setArguments(extras);
         transaction.replace(containerId, fragment);
         transaction.addToBackStack(null);
         transaction.commit();

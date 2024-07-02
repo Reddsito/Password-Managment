@@ -4,9 +4,9 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.content.res.ColorStateList;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.password_managment.R;
@@ -27,13 +27,13 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        HomeViewModel viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         preferencesHelper = new SharedPreferencesHelper(this);
         fragmentHelper = new FragmentHelper(getSupportFragmentManager(), this);
         fragmentHelper.replaceFragment(R.id.frame_layout, new HomeFragment());
         String userId = preferencesHelper.getString("user_id", "");
 
-        setUpSubscribers();
+        setupSubscribers();
         viewModel.fetchUser(userId);
         setupBottomNavigationView();
 
@@ -41,7 +41,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupBottomNavigationView() {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            animateBottomNavigationViewColor(item.getItemId());
 
                 if(item.getItemId() == R.id.home)
                     fragmentHelper.replaceFragment(R.id.frame_layout, new HomeFragment());
@@ -54,26 +53,23 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void animateBottomNavigationViewColor(int itemId) {
-        int colorFrom = getResources().getColor(R.color.white);
-        int colorTo = getResources().getColor(R.color.gray);
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(300);
-        colorAnimation.addUpdateListener(animator -> {
-            int animatedValue = (int) animator.getAnimatedValue();
-            ColorStateList animatedColor = ColorStateList.valueOf(animatedValue);
-            binding.bottomNavigationView.setItemIconTintList(animatedColor);
-            binding.bottomNavigationView.setItemTextColor(animatedColor);
-        });
-        colorAnimation.start();
-    }
-
-    public void setUpSubscribers() {
-        if (viewModel != null) {
-            viewModel.showHome.observe(this, navigate -> {
+    public void setupSubscribers() {
+        viewModel.showHome.observe(this, navigate -> {
                 if (navigate.getContentIfNotHandled()) showHomeFragment();
             });
-        }
+
+        viewModel.showCreatePassword.observe(this, navigate -> {
+            if(navigate.getContentIfNotHandled()) showCreatePasswordFragment();
+        });
+
+        viewModel.passwordData.observe(this, data -> {
+            showAddGroupFragment(data);
+        });
+
+        viewModel.showEditPassword.observe(this, data -> {
+            showEditPasswordFragment(data);
+        });
+
     }
 
     public void showHomeFragment() {
@@ -83,4 +79,13 @@ public class HomeActivity extends AppCompatActivity {
     public void showCreatePasswordFragment() {
         fragmentHelper.replaceFragment(R.id.frame_layout, new CreatePasswordFragment());
     }
+
+    public void showAddGroupFragment(Bundle data) {
+        fragmentHelper.replaceFragmentWithExtras(R.id.frame_layout, new AddGroupFragment(),data);
+    }
+
+    public void showEditPasswordFragment(Bundle data) {
+        fragmentHelper.replaceFragmentWithExtras(R.id.frame_layout, new ShowPasswordFragment(), data);
+    }
+
 }

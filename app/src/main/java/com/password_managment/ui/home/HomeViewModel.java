@@ -1,5 +1,6 @@
 package com.password_managment.ui.home;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,6 +14,8 @@ import com.password_managment.models.User;
 import com.password_managment.repository.PasswordRepository;
 import com.password_managment.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
@@ -25,6 +28,11 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<String> _userId = new MutableLiveData<>();
     private final MutableLiveData<String> _toastMessage = new MutableLiveData<>();
     private final MutableLiveData<Event<Boolean>> _showHome = new MutableLiveData<>();
+    private final MutableLiveData<Event<Boolean>> _showCreatePassword = new MutableLiveData<>();
+    private final MutableLiveData<Event<Boolean>> _showCreateGroup = new MutableLiveData<>();
+    private final MutableLiveData<Bundle> _passwordData = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> _groups = new MutableLiveData<>();
+    private final MutableLiveData<Bundle> _showEditPassword = new MutableLiveData<>();
 
     public LiveData<User> user = _user;
     public LiveData<List<Password>> passwords = _passwords;
@@ -32,6 +40,13 @@ public class HomeViewModel extends ViewModel {
     public LiveData<String> userId = _userId;
     public LiveData<String> toastMessage = _toastMessage;
     public LiveData<Event<Boolean>> showHome = _showHome;
+    public LiveData<Event<Boolean>> showCreatePassword = _showCreatePassword;
+    public LiveData<Event<Boolean>> showCreateGroup = _showCreateGroup;
+    public LiveData<List<String>> groups = _groups;
+    public LiveData<Bundle> passwordData = _passwordData;
+    public LiveData<Bundle> showEditPassword = _showEditPassword;
+
+
 
     public void fetchUser(String userId) {
         if (userId != null) {
@@ -73,11 +88,56 @@ public class HomeViewModel extends ViewModel {
 
         passwordRepository.createPassword(userId.getValue(), newPassword)
                 .thenAccept(response -> {
+                    List<Password> passwordList = _passwords.getValue();
+                    passwordList.add(newPassword);
+                    _passwords.setValue(passwordList);
                     _showHome.setValue(new Event<Boolean>(true));
                 })
                 .exceptionally(e -> {
                     Log.e("HomeViewModel", "Error creating password:", e);
                     return null;
                 });
+    }
+
+    public void showCreatePasswordFragment() {
+        Log.d("ViewModel", "ViewModel");
+        _showCreatePassword.setValue(new Event<>(true));
+    }
+
+    public void showCreateGroupFragment() {
+        _showCreateGroup.setValue(new Event<>(true));
+    }
+
+    public void showAddGroupFragment(String titleText, String passwordText) {
+        if (TextUtils.isEmpty(titleText) || TextUtils.isEmpty(passwordText)) {
+            _toastMessage.setValue("No se permiten campos vacios");
+            return;
+        }
+        Bundle data = new Bundle();
+        data.putString("title", titleText);
+        data.putString("password", passwordText);
+
+        _passwordData.setValue(data);
+    }
+
+    public void showEditPasswordFragment(Password password) {
+        Bundle data = new Bundle();
+        data.putString("title", password.getTitle());
+        data.putString("password", password.getTitle());
+
+        _showEditPassword.setValue(data);
+    }
+
+    public void showHomeFragment() {
+        _showHome.setValue(new Event<Boolean>(true));
+    }
+
+    public void fetchGroups() {
+        List<String> list = new ArrayList<>();
+        list.add("Grupo 1");
+        list.add("Grupo 2");
+        list.add("Grupo 3");
+
+        _groups.setValue(list);
     }
 }

@@ -8,22 +8,29 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.password_managment.R;
+import com.password_managment.components.adapters.PasswordListAdapter;
 import com.password_managment.databinding.FragmentHomeBinding;
 
 import com.password_managment.models.Password;
 import com.password_managment.utils.Functions;
 import com.password_managment.utils.helpers.FragmentHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements  PasswordListAdapter.OnPasswordClickListener {
 
     private FragmentHomeBinding binding;
     private HomeViewModel viewModel;
     private final Functions functions = new Functions();
     private FragmentHelper fragmentHelper;
+    RecyclerView passwordList;
+    PasswordListAdapter passwordAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,7 +56,10 @@ public class HomeFragment extends Fragment {
             if (passwords.isEmpty()) {
                 binding.buttonCreatePassword.setVisibility(View.VISIBLE);
             } else {
+                passwordAdapter = new PasswordListAdapter(passwords, requireActivity(), this);
                 binding.buttonCreatePassword.setVisibility(View.GONE);
+                binding.passwordList.setAdapter(passwordAdapter);
+                binding.passwordList.setLayoutManager(new LinearLayoutManager(requireActivity()));
             }
         });
 
@@ -73,5 +83,10 @@ public class HomeFragment extends Fragment {
     private void showCreatePasswordFragment() {
         if(getActivity() == null ) return;
         ((HomeActivity) getActivity()).showCreatePasswordFragment();
+    }
+
+    @Override
+    public void onPasswordClick(Password password) {
+        viewModel.showEditPasswordFragment(password);
     }
 }

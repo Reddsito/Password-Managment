@@ -16,6 +16,7 @@
     <EditText
         android:id="@+id/et_input"
         style="@style/input_field"
-        android:hint="example@gmail.com" />
+        android:hint="example@gmail.com"
+        />
 
 </LinearLayout>

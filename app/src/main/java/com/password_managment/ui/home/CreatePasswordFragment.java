@@ -56,21 +56,28 @@ public class CreatePasswordFragment extends Fragment {
         password.setHint("*********");
         password.setType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        setUpObservers();
-        setUpListeners();
+        setupObservers();
+        setupListeners();
 
         return view;
     }
 
-    private void setUpListeners() {
+    private void setupListeners() {
         createButton.setOnClickListener(v -> {
             String titleText = title.getText();
             String passwordText = password.getText();
-            viewModel.createPassword(titleText, passwordText);
+            viewModel.showAddGroupFragment(titleText, passwordText);
+        });
+
+        binding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.showHomeFragment();
+            }
         });
     }
 
-    public void setUpObservers() {
+    public void setupObservers() {
         viewModel.toastMessage.observe(getViewLifecycleOwner(), message -> {
             toastHelper.showShortToast(requireActivity(), message);
         });

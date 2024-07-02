@@ -1,6 +1,7 @@
 package com.password_managment.components;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,8 +56,12 @@ public class ButtonComponent extends LinearLayout {
         button.setText(label);
     }
 
-    public void setButtonVisibility(int visibility) {
-        button.setVisibility(visibility);
+    public String getText() {
+        return button.getText().toString();
+    }
+
+    public void setBackgroudColor(Drawable color) {
+        button.setBackground(color);
     }
 
 }

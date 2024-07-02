@@ -39,9 +39,9 @@ public class RegisterFragment extends Fragment {
         passwordField = view.findViewById(R.id.form_field3);
         registerButton = view.findViewById(R.id.button_register);
 
-        emailField.setLabel("Name");
-        emailField.setHint("Jhon Doe");
-        emailField.setType(InputType.TYPE_CLASS_TEXT);
+        nameField.setLabel("Name");
+        nameField.setHint("Jhon Doe");
+        nameField.setType(InputType.TYPE_CLASS_TEXT);
 
         emailField.setLabel("Email");
         emailField.setHint("example@gmail.com");

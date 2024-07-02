@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.password_managment.R;
 import com.password_managment.components.FormFieldComponent;
 import com.password_managment.databinding.FragmentProfileBinding;
+import com.password_managment.utils.helpers.SharedPreferencesHelper;
 
 public class ProfileFragment extends Fragment {
 
@@ -20,6 +21,7 @@ public class ProfileFragment extends Fragment {
     private FormFieldComponent emailField;
     private FormFieldComponent nameField;
     private HomeViewModel viewModel;
+    private SharedPreferencesHelper preferencesHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,8 +29,10 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        preferencesHelper = new SharedPreferencesHelper(requireActivity());
 
-         emailField = binding.formField;
+
+        emailField = binding.formField;
          nameField = binding.formField2;
 
         setupFields();

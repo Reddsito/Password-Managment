@@ -93,6 +93,8 @@ public class AuthActivity extends AppCompatActivity {
         authRepository.createUserWithEmailAndPassword(email, password, name, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess() {
+                FirebaseUser user = authRepository.getCurrentUser();
+                preferencesHelper.saveString("user_id", user.getUid());
                 showSecurityQuestionFragment();
             }
 

@@ -19,6 +19,7 @@ import com.password_managment.R;
 import com.password_managment.repository.AuthRepository;
 import com.password_managment.ui.home.HomeViewModel;
 import com.password_managment.ui.launcher.LauncherActivity;
+import com.password_managment.utils.helpers.ActivityHelper;
 import com.password_managment.utils.helpers.SharedPreferencesHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,12 +43,12 @@ public class MainActivity extends AppCompatActivity {
         authRepository = AuthRepository.getInstance();
         preferencesHelper = new SharedPreferencesHelper(this);
 
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
        FirebaseUser user = authRepository.getCurrentUser();
+        authRepository.signOut();
         if (user != null) {
             preferencesHelper.saveString("user_id", user.getUid());
         }

@@ -90,4 +90,16 @@ public class FormFieldComponent extends LinearLayout {
     public void setOnIconClickListener(OnClickListener listener) {
         this.onIconClickListener = listener;
     }
+
+    public void setActive(Boolean isClickable, Context context) {
+        inputEditText.setClickable(isClickable);
+        inputEditText.setCursorVisible(isClickable);
+        inputEditText.setFocusableInTouchMode(isClickable);
+
+        int gray = ContextCompat.getColor(context, R.color.gray);
+        int black = ContextCompat.getColor(context, R.color.black);
+
+        inputEditText.setTextColor(isClickable ? black : gray);
+
+    }
 }

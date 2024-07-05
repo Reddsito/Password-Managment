@@ -41,11 +41,11 @@ public class SecurityQuestionsFragment extends Fragment {
         question1.setHint("Respuesta");
         question1.setType(InputType.TYPE_CLASS_TEXT);
 
-        question2.setLabel("Nombre de tu mejor amigo");
+        question2.setLabel("Provincia donde naciste");
         question2.setHint("Respuesta");
         question2.setType(InputType.TYPE_CLASS_TEXT);
 
-        question3.setLabel("Nombre de tu mejor amigo");
+        question3.setLabel("Nombre de tu mamá");
         question3.setHint("Respuesta");
         question3.setType(InputType.TYPE_CLASS_TEXT);
 

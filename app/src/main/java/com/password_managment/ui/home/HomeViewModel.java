@@ -123,7 +123,7 @@ public class HomeViewModel extends ViewModel {
     public void showEditPasswordFragment(Password password) {
         Bundle data = new Bundle();
         data.putString("title", password.getTitle());
-        data.putString("password", password.getTitle());
+        data.putString("password", password.getPassword());
 
         _showEditPassword.setValue(data);
     }
@@ -137,7 +137,6 @@ public class HomeViewModel extends ViewModel {
         list.add("Grupo 1");
         list.add("Grupo 2");
         list.add("Grupo 3");
-
         _groups.setValue(list);
     }
 }

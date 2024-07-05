@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
        FirebaseUser user = authRepository.getCurrentUser();
-        authRepository.signOut();
         if (user != null) {
             preferencesHelper.saveString("user_id", user.getUid());
         }

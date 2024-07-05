@@ -1,15 +1,21 @@
 package com.password_managment.ui.auth;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.password_managment.R;
 import com.password_managment.repository.AuthRepository;
 import com.password_managment.utils.helpers.ActivityHelper;
@@ -78,6 +84,24 @@ public class AuthActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 FirebaseUser user = authRepository.getCurrentUser();
+                securityResponsesRepository.getSecurityQuestions(user.getUid(), new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            for (Map.Entry<String, Object> entry : document.getData().entrySet()) {
+                                String questionKey = entry.getKey();
+                                String response = (String) entry.getValue();
+                                System.out.println(response);
+                                preferencesHelper.saveString(questionKey, response);
+                            }
+                        }
+                    }
+                }, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("Auth_Activity", e.getMessage());
+                    }
+                });
                 preferencesHelper.saveString("user_id", user.getUid());
                 activityHelper.startNewActivity(HomeActivity.class);
             }
@@ -111,6 +135,11 @@ public class AuthActivity extends AppCompatActivity {
             securityResponsesRepository.saveSecurityQuestion(userId, "questions", securityQuestions, new SecurityResponsesRepository.FirestoreCallback() {
                 @Override
                 public void onSuccess() {
+                    for (Map.Entry<String, Object> entry : securityQuestions.entrySet()) {
+                        String questionKey = entry.getKey();
+                        String response = (String) entry.getValue();
+                        preferencesHelper.saveString(questionKey, response);
+                    }
                     activityHelper.startNewActivity(HomeActivity.class);
                 }
 

@@ -37,6 +37,7 @@ public class ProfileFragment extends Fragment {
 
         setupFields();
         setupObservers();
+        setupListeners();
 
         return view;
     }
@@ -44,10 +45,11 @@ public class ProfileFragment extends Fragment {
     public void setupFields() {
         nameField.setLabel("Name");
         nameField.setType(InputType.TYPE_CLASS_TEXT);
+        nameField.setActive(false, requireActivity());
 
         emailField.setLabel("Email");
         emailField.setType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-
+        emailField.setActive(false, requireActivity());
         binding.buttonEdit.setButton("Edit");
         binding.buttonDelete.setButton("Delete");
     }
@@ -56,6 +58,15 @@ public class ProfileFragment extends Fragment {
         viewModel.user.observe(requireActivity(), user -> {
             nameField.setInputText(user.getName());
             emailField.setInputText(user.getEmail());
+        });
+    }
+
+    public void setupListeners() {
+        binding.buttonEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nameField.setActive(true, requireActivity());
+            }
         });
     }
 }

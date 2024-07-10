@@ -35,13 +35,13 @@ public class HomeActivity extends AppCompatActivity {
 
         setupSubscribers();
         viewModel.fetchUser(userId);
+        viewModel.fetchPasswordGroup(userId);
         setupBottomNavigationView();
 
     }
 
     private void setupBottomNavigationView() {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-
                 if(item.getItemId() == R.id.home)
                     fragmentHelper.replaceFragment(R.id.frame_layout, new HomeFragment());
                 if(item.getItemId() == R.id.add)
@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
                 if(item.getItemId() == R.id.profile)
                     fragmentHelper.replaceFragment(R.id.frame_layout, new ProfileFragment());
 
-                return  true;
+                return true;
         });
     }
 
@@ -62,17 +62,19 @@ public class HomeActivity extends AppCompatActivity {
             if(navigate.getContentIfNotHandled()) showCreatePasswordFragment();
         });
 
-        viewModel.passwordData.observe(this, data -> {
-            showAddGroupFragment(data);
-        });
+        viewModel.passwordData.observe(this, this::showAddGroupFragment);
 
-        viewModel.showEditPassword.observe(this, data -> {
-            showEditPasswordFragment(data);
+        viewModel.showEditPassword.observe(this, this::showEditPasswordFragment);
+
+        viewModel.showCreateGroup.observe(this, data -> {
+            showCreateGroupFragment();
         });
 
     }
 
     public void showHomeFragment() {
+        binding.bottomNavigationView.setSelectedItemId(R.id.home);
+
         fragmentHelper.replaceFragment(R.id.frame_layout, new HomeFragment());
     }
 
@@ -86,6 +88,10 @@ public class HomeActivity extends AppCompatActivity {
 
     public void showEditPasswordFragment(Bundle data) {
         fragmentHelper.replaceFragmentWithExtras(R.id.frame_layout, new ShowPasswordFragment(), data);
+    }
+
+    public void showCreateGroupFragment() {
+        fragmentHelper.replaceFragment(R.id.frame_layout, new CreateGroupFragment());
     }
 
 }

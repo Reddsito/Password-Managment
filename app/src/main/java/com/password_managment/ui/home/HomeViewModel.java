@@ -10,17 +10,22 @@ import androidx.lifecycle.ViewModel;
 
 import com.password_managment.models.Event;
 import com.password_managment.models.Password;
+import com.password_managment.models.PasswordGroup;
 import com.password_managment.models.User;
+import com.password_managment.models.UserPassword;
+import com.password_managment.repository.PasswordGroupRepository;
 import com.password_managment.repository.PasswordRepository;
 import com.password_managment.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeViewModel extends ViewModel {
     private final UserRepository userRepository = new UserRepository();
     private final PasswordRepository passwordRepository = new PasswordRepository();
+    private final PasswordGroupRepository passwordGroupRepository = new PasswordGroupRepository();
 
     private final MutableLiveData<User> _user = new MutableLiveData<>();
     private final MutableLiveData<List<Password>> _passwords = new MutableLiveData<>();
@@ -33,6 +38,7 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<Bundle> _passwordData = new MutableLiveData<>();
     private final MutableLiveData<List<String>> _groups = new MutableLiveData<>();
     private final MutableLiveData<Bundle> _showEditPassword = new MutableLiveData<>();
+    private final MutableLiveData<List<PasswordGroup>> _passwordGroups = new MutableLiveData<>();
 
     public LiveData<User> user = _user;
     public LiveData<List<Password>> passwords = _passwords;
@@ -45,6 +51,7 @@ public class HomeViewModel extends ViewModel {
     public LiveData<List<String>> groups = _groups;
     public LiveData<Bundle> passwordData = _passwordData;
     public LiveData<Bundle> showEditPassword = _showEditPassword;
+    public LiveData<List<PasswordGroup>> passwordGroups = _passwordGroups;
 
 
 
@@ -77,14 +84,46 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-    public void createPassword(String titleText, String passwordText) {
+    public void fetchPasswordGroup(String userId) {
+        passwordGroupRepository.getPasswordGroups(userId)
+                .thenAccept(_passwordGroups::postValue)
+                .exceptionally(e -> {
+                    Log.e("HomeViewModel", "Error getting password group: ", e);
+                    return null;
+                });
+    }
+
+    public void createPasswordGroup(String userId, PasswordGroup passwordGroup) {
+
+        if (TextUtils.isEmpty(passwordGroup.getName())) {
+            _toastMessage.setValue("No se permiten campos vacios");
+            return;
+        }
+
+        passwordGroupRepository.createPasswordGroup(passwordGroup, userId).thenAccept(response -> {
+            List<PasswordGroup> passwordGroupList;
+            if(Objects.requireNonNull(_passwordGroups.getValue()).isEmpty()) {
+                passwordGroupList = new ArrayList<>();
+            }
+            passwordGroupList = _passwordGroups.getValue();
+            passwordGroupList.add(passwordGroup);
+            _passwordGroups.setValue(passwordGroupList);
+            _showHome.setValue(new Event<Boolean>(true));
+        }).exceptionally(e -> {
+                    Log.e("HomeViewModel", "Error creating password group: ", e);
+                    return null;
+                });
+
+    }
+
+    public void createPassword(String titleText, String passwordText, String groupId, String groupName) {
 
         if (TextUtils.isEmpty(titleText) || TextUtils.isEmpty(passwordText)) {
             _toastMessage.setValue("No se permiten campos vacios");
             return;
         }
 
-        Password newPassword = new Password(titleText, passwordText);
+        Password newPassword = new Password(titleText, passwordText, groupId, groupName);
 
         passwordRepository.createPassword(userId.getValue(), newPassword)
                 .thenAccept(response -> {
@@ -132,11 +171,4 @@ public class HomeViewModel extends ViewModel {
         _showHome.setValue(new Event<Boolean>(true));
     }
 
-    public void fetchGroups() {
-        List<String> list = new ArrayList<>();
-        list.add("Grupo 1");
-        list.add("Grupo 2");
-        list.add("Grupo 3");
-        _groups.setValue(list);
-    }
 }

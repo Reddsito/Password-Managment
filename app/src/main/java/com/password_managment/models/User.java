@@ -1,9 +1,14 @@
 package com.password_managment.models;
 
+import java.util.List;
+
 public class User {
     String id;
     String name;
     String email;
+
+
+    public User() {}
 
     public String getId() {
         return id;

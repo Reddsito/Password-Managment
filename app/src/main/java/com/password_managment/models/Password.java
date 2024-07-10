@@ -4,6 +4,8 @@ public class Password {
     private String id;
     private String title;
     private String password;
+    private String groupId;
+    private String groupName;
 
     public Password() {
 
@@ -14,10 +16,17 @@ public class Password {
         this.password = password;
     }
 
-    public Password(String title, String password, String id) {
+    public Password(String title, String password, String groupId) {
         this.title = title;
         this.password = password;
-        this.id = id;
+        this.groupId = groupId;
+    }
+
+    public Password(String title, String password, String groupId, String groupName) {
+        this.title = title;
+        this.password = password;
+        this.groupId = groupId;
+        this.groupName = groupName;
     }
 
     public String getId() {
@@ -26,6 +35,14 @@ public class Password {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public String getTitle() {
@@ -42,5 +59,13 @@ public class Password {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

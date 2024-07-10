@@ -1,8 +1,18 @@
 package com.password_managment.repository;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.password_managment.models.User;
+import android.util.Log;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.password_managment.models.Password;
+import com.password_managment.models.PasswordGroup;
+import com.password_managment.models.User;
+import com.password_managment.models.UserPassword;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class UserRepository {

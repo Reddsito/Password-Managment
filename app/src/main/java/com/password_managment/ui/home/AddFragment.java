@@ -41,7 +41,6 @@ public class AddFragment extends Fragment {
                 Log.d("AddFragment", "Addfragment");
                 viewModel.showCreatePasswordFragment();
             }
-
         });
 
         binding.createGroup.setOnClickListener(new View.OnClickListener() {

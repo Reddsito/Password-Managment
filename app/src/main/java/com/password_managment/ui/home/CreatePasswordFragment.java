@@ -75,6 +75,7 @@ public class CreatePasswordFragment extends Fragment {
                 viewModel.showHomeFragment();
             }
         });
+
     }
 
     public void setupObservers() {

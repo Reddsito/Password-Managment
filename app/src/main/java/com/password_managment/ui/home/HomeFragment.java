@@ -75,9 +75,13 @@ public class HomeFragment extends Fragment implements  PasswordListAdapter.OnPas
         viewModel.passwords.observe(getViewLifecycleOwner(), passwords -> {
             if (passwords.isEmpty()) {
                 binding.buttonCreatePassword.setVisibility(View.VISIBLE);
+                binding.searchBar.setVisibility(View.GONE);
+                binding.spinner.setVisibility(View.GONE);
             } else {
                 passwordAdapter = new PasswordListAdapter(passwords, requireActivity(), this);
                 binding.buttonCreatePassword.setVisibility(View.GONE);
+                binding.searchBar.setVisibility(View.VISIBLE);
+                binding.spinner.setVisibility(View.VISIBLE);
                 binding.passwordList.setAdapter(passwordAdapter);
                 binding.passwordList.setLayoutManager(new LinearLayoutManager(requireActivity()));
             }

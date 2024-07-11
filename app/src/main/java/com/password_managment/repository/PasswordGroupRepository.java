@@ -22,16 +22,23 @@ public class PasswordGroupRepository {
                 .document(userId)
                 .collection("password_groups")
                 .add(passwordGroup)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        completableFuture.complete(null);
-                    } else {
-                        completableFuture.completeExceptionally(task.getException());
-                    }
-                });
+                .addOnSuccessListener(documentReference -> {
+                    // Get the ID of the created document
+                    String groupId = documentReference.getId();
+
+                    // Update the passwordGroup object with the ID
+                    passwordGroup.setId(groupId);
+
+                    // Update the document with the ID field
+                    documentReference.update("id", groupId)
+                            .addOnSuccessListener(aVoid -> completableFuture.complete(null))
+                            .addOnFailureListener(completableFuture::completeExceptionally);
+                })
+                .addOnFailureListener(completableFuture::completeExceptionally);
 
         return completableFuture;
     }
+
 
     public CompletableFuture<List<PasswordGroup>> getPasswordGroups(String userId) {
         CompletableFuture<List<PasswordGroup>> completableFuture = new CompletableFuture<>();

@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.Gson;
 import com.password_managment.models.Event;
 import com.password_managment.models.Password;
 import com.password_managment.models.PasswordGroup;
@@ -82,6 +83,28 @@ public class HomeViewModel extends ViewModel {
             _loading.setValue(false);
             return null;
         });
+    }
+
+    public void deletePassword(Password password, String userId) {
+        passwordRepository.deletePassword(userId, password.getId()).thenAccept(response -> {
+            List<Password> currentPasswords = _passwords.getValue();
+            if (currentPasswords != null) {
+                currentPasswords.removeIf(p -> p.getId().equals(password.getId()));
+                _passwords.setValue(currentPasswords);
+            }
+            _showHome.setValue(new Event<>(true));
+        }).exceptionally(e -> {
+            return null;
+        });
+    }
+
+    public void updatePassword(Password password) {
+        List<Password> currentPasswords = _passwords.getValue();
+        if (currentPasswords != null) {
+            currentPasswords.removeIf(p -> p.getId().equals(password.getId()));
+            currentPasswords.add(password);
+            _passwords.setValue(currentPasswords);
+        }
     }
 
     public void fetchPasswordGroup(String userId) {
@@ -161,8 +184,10 @@ public class HomeViewModel extends ViewModel {
 
     public void showEditPasswordFragment(Password password) {
         Bundle data = new Bundle();
-        data.putString("title", password.getTitle());
-        data.putString("password", password.getPassword());
+        Gson gson = new Gson();
+
+        String passwordConverted = gson.toJson(password);
+        data.putSerializable("editPassword", passwordConverted);
 
         _showEditPassword.setValue(data);
     }
@@ -170,5 +195,6 @@ public class HomeViewModel extends ViewModel {
     public void showHomeFragment() {
         _showHome.setValue(new Event<Boolean>(true));
     }
+
 
 }

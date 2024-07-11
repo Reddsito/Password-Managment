@@ -23,10 +23,22 @@ public class PasswordRepository {
                 .document(userId)
                 .collection(COLLECTION_PASSWORDS)
                 .add(password)
-                .addOnSuccessListener(documentReference -> future.complete(null))
+                .addOnSuccessListener(documentReference -> {
+                    // Get the ID of the created document
+                    String passwordId = documentReference.getId();
+
+                    // Update the password object with the ID
+                    password.setId(passwordId);
+
+                    // Update the document with the ID field
+                    documentReference.update("id", passwordId)
+                            .addOnSuccessListener(aVoid -> future.complete(null))
+                            .addOnFailureListener(future::completeExceptionally);
+                })
                 .addOnFailureListener(future::completeExceptionally);
         return future;
     }
+
 
     public CompletableFuture<List<Password>> getPasswords(String userId) {
         CompletableFuture<List<Password>> future = new CompletableFuture<>();
@@ -53,6 +65,18 @@ public class PasswordRepository {
                 .collection(COLLECTION_PASSWORDS)
                 .document(passwordId)
                 .delete()
+                .addOnSuccessListener(aVoid -> future.complete(null))
+                .addOnFailureListener(future::completeExceptionally);
+        return future;
+    }
+
+    public CompletableFuture<Void> updatePassword(String userId, String passwordId, Password newPasswordData) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        db.collection(COLLECTION_USERS)
+                .document(userId)
+                .collection(COLLECTION_PASSWORDS)
+                .document(passwordId)
+                .set(newPasswordData)
                 .addOnSuccessListener(aVoid -> future.complete(null))
                 .addOnFailureListener(future::completeExceptionally);
         return future;

@@ -11,6 +11,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.password_managment.R;
 import com.password_managment.databinding.ActivityHomeBinding;
+import com.password_managment.ui.auth.AuthActivity;
+import com.password_managment.ui.launcher.LauncherActivity;
+import com.password_managment.utils.helpers.ActivityHelper;
 import com.password_managment.utils.helpers.FragmentHelper;
 import com.password_managment.utils.helpers.SharedPreferencesHelper;
 
@@ -20,6 +23,7 @@ public class HomeActivity extends AppCompatActivity {
     private FragmentHelper fragmentHelper;
     private HomeViewModel viewModel;
     SharedPreferencesHelper preferencesHelper;
+    private ActivityHelper activityHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         fragmentHelper = new FragmentHelper(getSupportFragmentManager(), this);
         fragmentHelper.replaceFragment(R.id.frame_layout, new HomeFragment());
         String userId = preferencesHelper.getString("user_id", "");
+        activityHelper = new ActivityHelper(this);
 
         setupSubscribers();
         viewModel.fetchUser(userId);
@@ -69,6 +74,10 @@ public class HomeActivity extends AppCompatActivity {
         viewModel.showCreateGroup.observe(this, data -> {
             showCreateGroupFragment();
         });
+;
+        viewModel.showLauncher.observe(this, data -> {
+            navigateToLauncherActivity();
+        });
 
     }
 
@@ -92,6 +101,10 @@ public class HomeActivity extends AppCompatActivity {
 
     public void showCreateGroupFragment() {
         fragmentHelper.replaceFragment(R.id.frame_layout, new CreateGroupFragment());
+    }
+
+    public void navigateToLauncherActivity() {
+        activityHelper.startNewActivity(LauncherActivity.class);
     }
 
 }

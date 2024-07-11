@@ -17,6 +17,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class UserRepository {
     private final FirebaseFirestore db;
+    private static final String COLLECTION_USERS = "users";
+
 
     public UserRepository() {
         db = FirebaseFirestore.getInstance();
@@ -37,6 +39,18 @@ public class UserRepository {
                         future.completeExceptionally(new Exception("User not found"));
                     }
                 })
+                .addOnFailureListener(future::completeExceptionally);
+
+        return future;
+    }
+
+    public CompletableFuture<Void> updateUserName(String userId, String newName) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        db.collection(COLLECTION_USERS)
+                .document(userId)
+                .update("name", newName)
+                .addOnSuccessListener(aVoid -> future.complete(null))
                 .addOnFailureListener(future::completeExceptionally);
 
         return future;

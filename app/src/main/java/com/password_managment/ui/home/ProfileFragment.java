@@ -9,11 +9,14 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.password_managment.R;
 import com.password_managment.components.FormFieldComponent;
 import com.password_managment.databinding.FragmentProfileBinding;
+import com.password_managment.repository.AuthRepository;
 import com.password_managment.utils.helpers.SharedPreferencesHelper;
+import com.password_managment.utils.helpers.ToastHelper;
 
 public class ProfileFragment extends Fragment {
 
@@ -22,6 +25,9 @@ public class ProfileFragment extends Fragment {
     private FormFieldComponent nameField;
     private HomeViewModel viewModel;
     private SharedPreferencesHelper preferencesHelper;
+    private ToastHelper toastHelper;
+    private boolean updateName = false;
+    private AuthRepository authRepository;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,10 +36,11 @@ public class ProfileFragment extends Fragment {
         View view = binding.getRoot();
         viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         preferencesHelper = new SharedPreferencesHelper(requireActivity());
-
+        toastHelper = new ToastHelper();
+        authRepository = AuthRepository.getInstance();
 
         emailField = binding.formField;
-         nameField = binding.formField2;
+        nameField = binding.formField2;
 
         setupFields();
         setupObservers();
@@ -51,7 +58,7 @@ public class ProfileFragment extends Fragment {
         emailField.setType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailField.setActive(false, requireActivity());
         binding.buttonEdit.setButton("Edit");
-        binding.buttonDelete.setButton("Delete");
+        binding.buttonDelete.setButton("Sign out");
     }
 
     public void setupObservers() {
@@ -59,13 +66,33 @@ public class ProfileFragment extends Fragment {
             nameField.setInputText(user.getName());
             emailField.setInputText(user.getEmail());
         });
+
+        viewModel.toastMessage.observe(requireActivity(), message -> {
+            toastHelper.showShortToast(requireActivity(),message);
+        });
     }
 
     public void setupListeners() {
         binding.buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nameField.setActive(true, requireActivity());
+                updateName = !updateName;
+
+                nameField.setActive(updateName, requireActivity());
+                binding.buttonEdit.setButton("Save");
+                if(updateName) return;
+                String userId = preferencesHelper.getString("user_id", "");
+                viewModel.updateUserName(userId, nameField.getText().trim());
+                binding.buttonEdit.setButton("Edit");
+            }
+        });
+
+        binding.buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                preferencesHelper.clearAll();
+                authRepository.signOut();
+                viewModel.showLauncherActivity();
             }
         });
     }

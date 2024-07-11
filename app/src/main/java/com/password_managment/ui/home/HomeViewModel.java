@@ -36,6 +36,7 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<Event<Boolean>> _showHome = new MutableLiveData<>();
     private final MutableLiveData<Event<Boolean>> _showCreatePassword = new MutableLiveData<>();
     private final MutableLiveData<Event<Boolean>> _showCreateGroup = new MutableLiveData<>();
+    private final MutableLiveData<Event<Boolean>> _showLauncher = new MutableLiveData<>();
     private final MutableLiveData<Bundle> _passwordData = new MutableLiveData<>();
     private final MutableLiveData<List<String>> _groups = new MutableLiveData<>();
     private final MutableLiveData<Bundle> _showEditPassword = new MutableLiveData<>();
@@ -53,6 +54,7 @@ public class HomeViewModel extends ViewModel {
     public LiveData<Bundle> passwordData = _passwordData;
     public LiveData<Bundle> showEditPassword = _showEditPassword;
     public LiveData<List<PasswordGroup>> passwordGroups = _passwordGroups;
+    public LiveData<Event<Boolean>> showLauncher = _showLauncher;
 
 
 
@@ -73,6 +75,17 @@ public class HomeViewModel extends ViewModel {
         } else {
             _loading.setValue(false);
         }
+    }
+
+    public void updateUserName(String userId, String newName) {
+        userRepository.updateUserName(userId, newName).thenAccept(responsee -> {
+             User currentUser = user.getValue();
+             currentUser.setName(newName);
+             _user.postValue(currentUser);
+            _toastMessage.setValue("Nombre actualizado");
+        }).exceptionally(e -> {
+            return null;
+        });
     }
 
     private void fetchPasswords(String userId) {
@@ -168,6 +181,10 @@ public class HomeViewModel extends ViewModel {
 
     public void showCreateGroupFragment() {
         _showCreateGroup.setValue(new Event<>(true));
+    }
+
+    public void showLauncherActivity() {
+        _showLauncher.setValue(new Event<>(true));
     }
 
     public void showAddGroupFragment(String titleText, String passwordText) {
